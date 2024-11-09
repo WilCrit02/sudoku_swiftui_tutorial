@@ -13,6 +13,7 @@ class SudokuViewModel: ObservableObject {
     private var timer: Timer?
     private var startTime: Date?
     private var isTimerRunning = false
+    @Published var elapsedTime: Int = 0
 
     // Cell properties
     @Published var cells: [CellModel] = []
@@ -22,14 +23,18 @@ class SudokuViewModel: ObservableObject {
             updateSelectedCell()
         }
     }
-    
-    private var solutionGrid: [[Int]] = []
 
-    // Pencil mode
     @Published var isPencilMode: Bool = false
-
-    // Game status
+    
     @Published var isGameCompleted: Bool = false
+    @Published var isGameOver: Bool = false
+    
+    let difficulty: Difficulty
+    private var solutionGrid: [[Int]] = []
+    
+    init(difficulty: Difficulty) {
+        self.difficulty = difficulty
+    }
 
     // MARK: - Game Setup
 
@@ -110,6 +115,8 @@ class SudokuViewModel: ObservableObject {
                     cells[index].isIncorrect = false
                 }
             }
+            
+            checkForCompletion(markCellsAsIncorrect: false)
             objectWillChange.send()
         }
     }
@@ -139,14 +146,12 @@ class SudokuViewModel: ObservableObject {
             }
         }
         if !hasError {
-            isGameCompleted = true
-            stopTimer()
-            // Additional code for leaderboard or achievements can be added here
+            checkForCompletion()
         }
     }
 
     @discardableResult
-    private func validateCell(at index: Int) -> Bool {
+    private func validateCell(at index: Int, markAsIncorrect: Bool = true) -> Bool {
         guard let userValue = cells[index].value else {
             // If the cell is empty, it's not incorrect
             cells[index].isIncorrect = false
@@ -160,7 +165,7 @@ class SudokuViewModel: ObservableObject {
 
         if userValue != solutionValue {
             // Mark the cell as incorrect
-            if cells[index].isEditable {
+            if cells[index].isEditable && markAsIncorrect {
                 cells[index].isIncorrect = true
             }
             return false
@@ -173,17 +178,37 @@ class SudokuViewModel: ObservableObject {
         }
     }
 
-
     // Check if the puzzle is completely and correctly filled
-    private func checkForCompletion() {
+    private func checkForCompletion(markCellsAsIncorrect: Bool = true) {
         for index in cells.indices {
-            if !validateCell(at: index) || cells[index].value == nil {
+            if !validateCell(at: index, markAsIncorrect: markCellsAsIncorrect) || cells[index].value == nil {
+                // If any cell is invalid or empty, check if all cells are filled
+                if cells.allSatisfy({ $0.value != nil }) {
+                    // All cells are filled, but the puzzle is incorrect
+                    isGameOver = true
+                }
                 return
             }
         }
+        isGameOver = true
         isGameCompleted = true
         stopTimer()
-        // Trigger any completion actions, like updating the leaderboard
+        
+        // Report score to Game Center
+        reportScores()
+    }
+    
+    private func reportScores() {
+        let leaderboardID: String
+        switch difficulty {
+        case .easy:
+            leaderboardID = "com.yourapp.sudoku.leaderboard.easy"
+        case .medium:
+            leaderboardID = "com.yourapp.sudoku.leaderboard.medium"
+        case .hard:
+            leaderboardID = "com.yourapp.sudoku.leaderboard.hard"
+        }
+        GameCenterHelper.shared.reportScore(elapsedTime, forLeaderboardID: leaderboardID)
     }
 
     // MARK: - Restart Puzzle
@@ -192,8 +217,10 @@ class SudokuViewModel: ObservableObject {
         self.cells = initialCells
         self.selectedCell = nil
         self.isGameCompleted = false
+        self.isGameOver = false
         startTime = Date()
         timerString = "00:00"
+        startTimer()
     }
 
     // MARK: - Timer Management
@@ -204,14 +231,17 @@ class SudokuViewModel: ObservableObject {
         timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
             guard self.isTimerRunning else { return }
-            let elapsed = Int(Date().timeIntervalSince(self.startTime ?? Date()))
-            self.timerString = String(format: "%02d:%02d", elapsed / 60, elapsed % 60)
+            self.elapsedTime = Int(Date().timeIntervalSince(self.startTime ?? Date()))
+            self.timerString = String(format: "%02d:%02d", self.elapsedTime / 60, self.elapsedTime % 60)
         }
     }
 
     private func stopTimer() {
         isTimerRunning = false
         timer?.invalidate()
+        if let startTime = startTime {
+            self.elapsedTime = Int(Date().timeIntervalSince(startTime))
+        }
     }
 
     // MARK: - Game Pause and Resume (Optional)

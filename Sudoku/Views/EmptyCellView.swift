@@ -32,22 +32,22 @@ struct EmptyCellView: View {
                 // Top border
                 Rectangle()
                     .frame(height: topWidth)
-                    .foregroundColor(.black)
+                    .foregroundColor(.text1)
                     .position(x: width / 2, y: topWidth / 2)
                 // Bottom border
                 Rectangle()
                     .frame(height: bottomWidth)
-                    .foregroundColor(.black)
+                    .foregroundColor(.text1)
                     .position(x: width / 2, y: height - bottomWidth / 2)
                 // Left border
                 Rectangle()
                     .frame(width: leftWidth)
-                    .foregroundColor(.black)
+                    .foregroundColor(.text1)
                     .position(x: leftWidth / 2, y: height / 2)
                 // Right border
                 Rectangle()
                     .frame(width: rightWidth)
-                    .foregroundColor(.black)
+                    .foregroundColor(.text1)
                     .position(x: width - rightWidth / 2, y: height / 2)
             }
         }

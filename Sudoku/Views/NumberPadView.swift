@@ -20,9 +20,9 @@ struct NumberPadView: View {
                     action(number)
                 }) {
                     Text("\(number)")
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .font(.title)
-                        .frame(width: 50, height: 50)
-                        .background(Color.blue.opacity(0.7))
+                        .background(Color.accentColor.opacity(0.7))
                         .foregroundColor(.white)
                         .cornerRadius(10)
                 }
@@ -32,9 +32,10 @@ struct NumberPadView: View {
             Button(action: {
                 action(nil) // Passing nil to indicate deletion
             }) {
-                Image(systemName: "delete.left") // Using a system image for the delete icon
+                Image(systemName: "delete.left")
+                    .padding(8)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .font(.title)
-                    .frame(width: 50, height: 50)
                     .background(Color.red.opacity(0.7))
                     .foregroundColor(.white)
                     .cornerRadius(10)

@@ -7,17 +7,30 @@
 
 import GameKit
 
-class GameCenterHelper: NSObject, GKGameCenterControllerDelegate {
+class GameCenterHelper: NSObject, ObservableObject {
     static let shared = GameCenterHelper()
 
+    @Published var showAuthenticationView = false
+    var authenticationViewController: UIViewController?
+
+    override init() {
+        super.init()
+        authenticateUser()
+    }
+
     func authenticateUser() {
-        GKLocalPlayer.local.authenticateHandler = { vc, error in
-            if let vc {
-                // Present the Game Center login view controller
+        GKLocalPlayer.local.authenticateHandler = { [weak self] viewController, error in
+            if let vc = viewController {
+                // Present the authentication view controller
+                self?.authenticationViewController = vc
+                self?.showAuthenticationView = true
             } else if GKLocalPlayer.local.isAuthenticated {
                 // Player is authenticated
+                self?.showAuthenticationView = false
             } else {
                 // Handle authentication failure
+                self?.showAuthenticationView = false
+                print("Error authenticating with Game Center: \(error?.localizedDescription ?? "Unknown error")")
             }
         }
     }
@@ -26,17 +39,9 @@ class GameCenterHelper: NSObject, GKGameCenterControllerDelegate {
         let scoreReporter = GKScore(leaderboardIdentifier: leaderboardID)
         scoreReporter.value = Int64(score)
         GKScore.report([scoreReporter]) { error in
-            // Handle error if needed
+            if let error = error {
+                print("Error reporting score: \(error.localizedDescription)")
+            }
         }
-    }
-
-    func showLeaderboard() {
-        let viewController = GKGameCenterViewController()
-        viewController.gameCenterDelegate = self
-        // Present the Game Center view controller
-    }
-
-    func gameCenterViewControllerDidFinish(_ gameCenterViewController: GKGameCenterViewController) {
-        // Dismiss the Game Center view controller
     }
 }

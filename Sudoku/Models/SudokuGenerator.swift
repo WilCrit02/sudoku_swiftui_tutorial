@@ -146,11 +146,11 @@ extension Difficulty {
     func numberOfCellsToRemove() -> Int {
         switch self {
         case .easy:
-            return 35 // Remove 35 cells for Easy level
+            return 1
         case .medium:
-            return 45 // Remove 45 cells for Medium level
+            return 40
         case .hard:
-            return 55 // Remove 55 cells for Hard level
+            return 50
         }
     }
 }

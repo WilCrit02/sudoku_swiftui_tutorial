@@ -30,7 +30,7 @@ struct SudokuGridView: View {
                                 .overlay(
                                     Rectangle()
                                         .stroke(lineWidth: getBorderWidth(row: row, col: col))
-                                        .foregroundColor(.black)
+                                        .foregroundColor(.text1)
                                 )
                         } else {
                             // Optionally handle missing cells
@@ -38,7 +38,7 @@ struct SudokuGridView: View {
                                 .overlay(
                                     Rectangle()
                                         .stroke(lineWidth: getBorderWidth(row: row, col: col))
-                                        .foregroundColor(.black)
+                                        .foregroundColor(.text1)
                                 )
                         }
                     }
