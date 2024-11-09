@@ -10,29 +10,43 @@ import SwiftUI
 struct GameOverView: View {
     @Binding var isGameCompleted: Bool
     @Binding var completionTime: String
+    var onNewGame: () -> Void
     var onContinue: () -> Void
     var onRestart: () -> Void
     var onShare: () -> Void
 
     var body: some View {
-        VStack(spacing: 20) {
-            Text(isGameCompleted ? "Congrats!" : "Game Not Over")
+        VStack {
+            Text(isGameCompleted ? "Congrats!" : "Not done yet...")
                 .font(.largeTitle)
-                .padding()
+                .padding([.horizontal, .top])
 
             Text(isGameCompleted ? "You completed the puzzle in just \(completionTime)" : "The puzzle isn't solved correctly. Keep trying!")
 
             if isGameCompleted {
                 Button(action: {
-                    onRestart()
+                    onNewGame()
                 }) {
-                    Text("Restart")
+                    Text("New Game")
                         .font(.title2)
                         .frame(width: 200, height: 50)
                         .background(Color.blue.opacity(0.7))
                         .foregroundColor(.white)
                         .cornerRadius(10)
                 }
+                .padding([.top, .horizontal])
+                
+                Button(action: {
+                    onRestart()
+                }) {
+                    Text("Restart")
+                        .font(.title2)
+                        .frame(width: 200, height: 50)
+                        .background(Color.green.opacity(0.7))
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                }
+                .padding([.top, .horizontal])
                 
                 Button(action: {
                     onShare()
@@ -40,10 +54,11 @@ struct GameOverView: View {
                     Text("Share Results")
                         .font(.title2)
                         .frame(width: 200, height: 50)
-                        .background(Color.green.opacity(0.7))
+                        .background(Color.purple.opacity(0.7))
                         .foregroundColor(.white)
                         .cornerRadius(10)
                 }
+                .padding(.horizontal)
             } else {
                 Button(action: {
                     onContinue()
@@ -55,6 +70,7 @@ struct GameOverView: View {
                         .foregroundColor(.white)
                         .cornerRadius(10)
                 }
+                .padding()
             }
         }
         .padding()

@@ -146,7 +146,7 @@ extension Difficulty {
     func numberOfCellsToRemove() -> Int {
         switch self {
         case .easy:
-            return 1
+            return 30
         case .medium:
             return 40
         case .hard:

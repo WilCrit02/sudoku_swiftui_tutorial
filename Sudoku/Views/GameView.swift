@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct GameView: View {
+    @Environment(\.dismiss) private var dismiss
+    
     let difficulty: Difficulty
     @StateObject var viewModel: SudokuViewModel
     @State private var showConfetti = false
@@ -133,6 +135,9 @@ struct GameView: View {
                 GameOverView(
                     isGameCompleted: $viewModel.isGameCompleted,
                     completionTime: $viewModel.timerString,
+                    onNewGame: {
+                        dismiss()
+                    },
                     onContinue: {
                         viewModel.isGameOver = false
                     },
