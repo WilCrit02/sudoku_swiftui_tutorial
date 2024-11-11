@@ -10,6 +10,7 @@ import GameKit
 
 struct GameCenterView: UIViewControllerRepresentable {
     let leaderboardID: String
+    let dismiss: () -> Void
 
     func makeUIViewController(context: Context) -> GKGameCenterViewController {
         let gcViewController = GKGameCenterViewController(leaderboardID: leaderboardID, playerScope: .global, timeScope: .allTime)
@@ -17,9 +18,7 @@ struct GameCenterView: UIViewControllerRepresentable {
         return gcViewController
     }
 
-    func updateUIViewController(_ uiViewController: GKGameCenterViewController, context: Context) {
-        // No need to update
-    }
+    func updateUIViewController(_ uiViewController: GKGameCenterViewController, context: Context) {}
 
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
@@ -33,7 +32,8 @@ struct GameCenterView: UIViewControllerRepresentable {
         }
 
         func gameCenterViewControllerDidFinish(_ gameCenterViewController: GKGameCenterViewController) {
-            gameCenterViewController.dismiss(animated: true)
+            gameCenterViewController.dismiss(animated: true, completion: nil)
+            parent.dismiss()
         }
     }
 }

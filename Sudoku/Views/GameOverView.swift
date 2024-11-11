@@ -22,6 +22,7 @@ struct GameOverView: View {
                 .padding([.horizontal, .top])
 
             Text(isGameCompleted ? "You completed the puzzle in just \(completionTime)" : "The puzzle isn't solved correctly. Keep trying!")
+                .padding(.horizontal)
 
             if isGameCompleted {
                 Button(action: {
@@ -46,7 +47,7 @@ struct GameOverView: View {
                         .foregroundColor(.white)
                         .cornerRadius(10)
                 }
-                .padding([.top, .horizontal])
+                .padding(.horizontal)
                 
                 Button(action: {
                     onShare()
@@ -58,7 +59,7 @@ struct GameOverView: View {
                         .foregroundColor(.white)
                         .cornerRadius(10)
                 }
-                .padding(.horizontal)
+                .padding([.horizontal, .bottom])
             } else {
                 Button(action: {
                     onContinue()

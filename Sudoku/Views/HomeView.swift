@@ -12,52 +12,84 @@ struct HomeView: View {
     @StateObject var gameCenterHelper = GameCenterHelper.shared
 
     @State private var showGameCenter = false
-    @State private var leaderboardID: String?
+    @State private var leaderboardID = "com.haplo.sudoku.leaderboard.easy"
 
     var body: some View {
         NavigationView {
-            VStack(spacing: 20) {
-                Text("Sudoku")
-                    .font(.largeTitle)
-                    .padding()
-
-                ForEach(Difficulty.allCases, id: \.self) { difficulty in
-                    NavigationLink(destination: GameView(difficulty: difficulty)) {
-                        Text(difficulty.rawValue)
-                            .font(.title2)
-                            .frame(width: 200, height: 50)
-                            .background(Color.accentColor.opacity(0.7))
-                            .foregroundColor(.white)
-                            .cornerRadius(10)
-                    }
-                }
-
-                // Buttons to view leaderboards
-                Button(action: {
-                    leaderboardID = "com.haplo.sudoku.leaderboard.easy"
-                    showGameCenter = true
-                }) {
-                    Text("View Leaderboards")
-                        .font(.title3)
-                        .foregroundColor(.white)
+            ZStack {
+                Color.background1.ignoresSafeArea()
+                
+                // leaderboard button
+                VStack {
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            showGameCenter = true
+                        }) {
+                            Image(systemName: "trophy")
+                                .font(.callout)
+                                .bold()
+                                .foregroundColor(.text1)
+                                .padding()
+                                .background(Color.background3)
+                                .clipShape(Circle())
+                        }
                         .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(Color.green.opacity(0.7))
-                        .cornerRadius(15)
-                        .padding(.horizontal, 20)
+                    }
+                    Spacer()
+                }
+                
+                
+                VStack(spacing: 20) {
+                    Spacer()
+                    // App Icon Image above "Sudoku" text
+                    ZStack {
+                        Image("SudokuLogo")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 100, height: 100)
+                    }
+                    .frame(width: 100, height: 100)
+                    .cornerRadius(15)
+                    .rotationEffect(.degrees(-15))
+                    .padding(.top, 40)
+                    .shadow(color: .shadow, radius: 8, x: 2, y: 3)
+
+                    // Improved "Sudoku" text
+                    Text("Sudoku.")
+                        .font(.system(size: 48, weight: .bold, design: .rounded))
+                        .foregroundColor(.primary)
+                        .padding()
+
+                    // Difficulty buttons
+                    ForEach(Difficulty.allCases, id: \.self) { difficulty in
+                        NavigationLink(destination: GameView(difficulty: difficulty)) {
+                            Text(difficulty.rawValue)
+                                .font(.title2)
+                                .frame(width: 200, height: 50)
+                                .background(Color.accentColor.opacity(0.7))
+                                .foregroundColor(.white)
+                                .cornerRadius(10)
+                        }
+                    }
+                    
+                    Spacer()
+                    Spacer()
                 }
             }
-            .sheet(isPresented: $showGameCenter) {
-                if let leaderboardID = leaderboardID {
-                    GameCenterView(leaderboardID: leaderboardID)
-                }
-            }
+            .navigationBarTitleDisplayMode(.inline)
             .sheet(isPresented: $gameCenterHelper.showAuthenticationView) {
                 if let authViewController = gameCenterHelper.authenticationViewController {
                     AuthenticationViewControllerWrapper(authViewController: authViewController)
                 }
             }
+            .sheet(isPresented: $showGameCenter) {
+                GameCenterView(leaderboardID: leaderboardID) { // on dismiss
+                    showGameCenter = false
+                }
+            }
         }
+        .navigationViewStyle(StackNavigationViewStyle())
     }
 }
 
@@ -69,11 +101,8 @@ struct AuthenticationViewControllerWrapper: UIViewControllerRepresentable {
         return authViewController
     }
 
-    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
-        // No updates needed
-    }
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
 }
-
 
 enum Difficulty: String, CaseIterable {
     case easy = "Easy"

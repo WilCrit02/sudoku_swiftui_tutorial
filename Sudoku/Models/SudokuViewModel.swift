@@ -202,11 +202,11 @@ class SudokuViewModel: ObservableObject {
         let leaderboardID: String
         switch difficulty {
         case .easy:
-            leaderboardID = "com.yourapp.sudoku.leaderboard.easy"
+            leaderboardID = "com.haplo.sudoku.leaderboard.easy"
         case .medium:
-            leaderboardID = "com.yourapp.sudoku.leaderboard.medium"
+            leaderboardID = "com.haplo.sudoku.leaderboard.medium"
         case .hard:
-            leaderboardID = "com.yourapp.sudoku.leaderboard.hard"
+            leaderboardID = "com.haplo.sudoku.leaderboard.hard"
         }
         GameCenterHelper.shared.reportScore(elapsedTime, forLeaderboardID: leaderboardID)
     }

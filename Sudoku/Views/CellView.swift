@@ -37,9 +37,9 @@ struct CellView: View {
 
     private func cellBackgroundColor() -> Color {
         if cell.isSelected {
-            return Color.accentColor.opacity(0.2)
+            return Color.accentColor.opacity(0.4)
         } else if cell.isHighlighted {
-            return Color.accentColor.opacity(0.1) // For highlighting related cells
+            return Color.cellHighlight
         } else {
             return Color.background1
         }

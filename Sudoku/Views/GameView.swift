@@ -22,12 +22,15 @@ struct GameView: View {
 
     var body: some View {
         ZStack {
+            Color.background1.ignoresSafeArea()
+            
             VStack {
-                Text("\(difficulty.rawValue) Sudoku")
-                    .font(.title)
-                    .padding()
+                Text("\(difficulty.rawValue) Puzzle")
+                    .font(.system(size: 30, weight: .bold, design: .rounded))
+                    .bold()
+                    .padding([.top, .horizontal])
 
-                Text("Time: \(viewModel.timerString)")
+                Text("\(viewModel.timerString)")
                     .font(.subheadline)
                     .padding(.bottom)
 
@@ -154,6 +157,8 @@ struct GameView: View {
                 }
             }
         }
+        .navigationBarBackButtonHidden(true)
+        .navigationBarItems(leading: customBackButton)
         .onAppear {
             viewModel.startGame(difficulty: difficulty)
         }
@@ -163,5 +168,18 @@ struct GameView: View {
             }
         }
         .displayConfetti(isActive: $showConfetti)
+    }
+    
+    private var customBackButton: some View {
+        Button(action: {
+            dismiss()
+        }) {
+            Image(systemName: "chevron.left")
+                .font(.body)
+                .foregroundColor(.text1)
+                .padding()
+                .background(Color.background3)
+                .clipShape(Circle())
+        }
     }
 }
