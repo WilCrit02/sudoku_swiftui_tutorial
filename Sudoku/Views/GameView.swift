@@ -153,7 +153,10 @@ struct GameView: View {
                     }
                 )
                 .sheet(isPresented: $showShareSheet) {
-                    ActivityViewController(activityItems: ["I just played a Sudoku game on \(difficulty.rawValue) difficulty! Try to beat my time!"])
+                    ActivityViewController(activityItems: [
+                        "I just completed a Sudoku game on \(difficulty.rawValue) difficulty in only \(viewModel.timerString)! Try to beat my time!",
+                        URL(string: "https://apps.apple.com/us/app/sudoku-puzzles-for-relaxation/id6737999563")!
+                    ])
                 }
             }
         }
