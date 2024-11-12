@@ -12,7 +12,7 @@ struct HomeView: View {
     @StateObject var gameCenterHelper = GameCenterHelper.shared
 
     @State private var showGameCenter = false
-    @State private var leaderboardID = "com.haplo.sudoku.leaderboard.easy"
+    @State private var leaderboardID = ""
 
     var body: some View {
         NavigationView {
